@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "448474749674",
+    "firebase_url": "https://bustank-36ea0.firebaseio.com",
+    "project_id": "bustank-36ea0",
+    "storage_bucket": "bustank-36ea0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448474749674:android:b6b517814f1cc640995593",
+        "android_client_info": {
+          "package_name": "com.example.bustank"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448474749674-1kr15b5sn7kd94m6h45g76t7qnolhuve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bustank",
+            "certificate_hash": "2e59886903edf13c920be7e5bf68df27c05b1a6f"
+          }
+        },
+        {
+          "client_id": "448474749674-79b46p07b552vmnu58a6f9l9dm4s2le9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsK1_xncGOulKySN6L6SC9h9mf7ddqeIw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448474749674-79b46p07b552vmnu58a6f9l9dm4s2le9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "448474749674-34lio0i184ukh40ddqmt753atdotcbru.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bustank"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448474749674:android:cb06db989e5940e3995593",
+        "android_client_info": {
+          "package_name": "com.example.bustank_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448474749674-768d0649jb37btfctocpdahucqvha2dj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bustank_admin",
+            "certificate_hash": "56ff5d8d8087bb723f572ef3ceff637e519dbb8f"
+          }
+        },
+        {
+          "client_id": "448474749674-79b46p07b552vmnu58a6f9l9dm4s2le9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsK1_xncGOulKySN6L6SC9h9mf7ddqeIw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448474749674-79b46p07b552vmnu58a6f9l9dm4s2le9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "448474749674-34lio0i184ukh40ddqmt753atdotcbru.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bustank"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
