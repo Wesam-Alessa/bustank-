@@ -12,8 +12,8 @@ class OrderFetcher {
   static const String CREATED_AT = "createdAt";
   static const String PHONENUMBER = "phoneNumber";
 
-    String?_id;
-  List<dynamic>? _description;
+  String?_id;
+  List<dynamic>?_description;
   String? _userId;
   String? _orderStatus;
   String? _receiptStatus;

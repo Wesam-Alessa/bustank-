@@ -35,9 +35,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   cloud_firestore:
-  #firebase_core:
+# firebase_core:
   firebase_auth:
-  #google_sign_in:
+# google_sign_in:
   shared_preferences:
   fluttertoast:
   image_picker:
@@ -100,7 +100,6 @@ flutter:
     - image/products/palm_tree_prod.jpg
     - image/products/shovel_prod.jfif
     - image/products/wagon_prod.jpg
-    -
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

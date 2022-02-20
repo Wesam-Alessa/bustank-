@@ -33,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context,listen: true);
     final productProvider = Provider.of<ProductProvider>(context,listen: true);
-    return userProvider.user.uid.isNotEmpty?
+    return userProvider.user.uid.isNotEmpty ?
       Scaffold(
         key: _key,
         appBar: AppBar(
@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   await userProvider.getFavourites();
                     Navigator.push(context,
                         MaterialPageRoute(builder:(_) =>
-                            FavouritesScreen()));
+                            FavouritesScreen(),),);
                     },
                 child: ListTile(
                   title: Text('Favourites'),
@@ -188,44 +188,42 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
         body: SafeArea(
-          child: ListView(
-            children: <Widget>[
-              //images carousel begins here
-              imageCarousel(),
-              //padding widget
-               Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Container(
-                    alignment: Alignment.centerLeft, child: Text("Categories")),
-              ),
-              //Horizontal list view begins here
-              HorizontalList(),
-               Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("Recent Products")),
-              ),
-
-              //vertical grid view begins here
-                 Column(
-                  children: productProvider.productsFeatured
-                      .map((item) => GestureDetector(
-                      child: ProductCard(
-                      product: item,
-                    ),
-                  ),
-                  ).toList(),
-                ),
-            ],
-          ),
+          child: HorizontalList(),
+          // ListView(
+          //   children: <Widget>[
+          //     //images carousel begins here
+          //     //imageCarousel(),
+          //     //padding widget
+          //      Padding(
+          //       padding: const EdgeInsets.all(6.0),
+          //       child: Container(
+          //           alignment: Alignment.centerLeft, child: Text("Categories")),
+          //     ),
+          //     //Horizontal list view begins here
+          //
+          //     //  Padding(
+          //     //   padding: const EdgeInsets.all(6.0),
+          //     //   child: Container(
+          //     //       alignment: Alignment.centerLeft,
+          //     //       child: Text("Recent Products")),
+          //     // ),
+          //     //vertical grid view begins here
+          //     //    Column(
+          //     //     children: productProvider.productsFeatured
+          //     //         .map((item) => GestureDetector(
+          //     //         child: ProductCard(
+          //     //         product: item,
+          //     //       ),
+          //     //     ),
+          //     //     ).toList(),
+          //     //   ),
+          //   ],
+          // ),
         ),
-
     )
     :Center(child: CircularProgressIndicator(),);
   }
