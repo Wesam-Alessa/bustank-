@@ -21,7 +21,6 @@ class HomeList extends StatelessWidget {
           crossAxisCount: 2,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-
       ),
         scrollDirection: Axis.vertical,
 

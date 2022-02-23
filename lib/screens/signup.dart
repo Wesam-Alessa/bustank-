@@ -28,6 +28,8 @@ class _SignUpState extends State<SignUp> {
   String groupValue = 'male';
   bool hidePass = true;
 
+
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context);

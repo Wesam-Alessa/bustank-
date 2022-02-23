@@ -1,6 +1,6 @@
-// ignore_for_file: avoid_print, prefer_const_constructors, sized_box_for_whitespace, invalid_use_of_visible_for_testing_member
+// ignore_for_file: avoid_print, prefer_const_constructors, sized_box_for_whitespace, invalid_use_of_visible_for_testing_member, prefer_typing_uninitialized_variables
 
-import 'package:bustank/provider/user_provider.dart';
+ import 'package:bustank/provider/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,9 +20,32 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _key = GlobalKey<ScaffoldState>();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _address = TextEditingController();
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+  late var userProvider;
+
+  String ref = "users";
+  String id = '';
+  bool loading = false;
   File? _image;
   final String _bio =
       "\"Hi, We are Bostank Foundation, working around the clock. If you want to contact us to present your product, call the establishment number.\"";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    id = userProvider.user.uid;
+    super.initState();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _name.dispose();
+    _address.dispose();
+  }
 
   Future<void> getImage() async {
     var i = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
@@ -35,27 +58,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future uploadPic(BuildContext context) async {
-    final userProvider = Provider.of<UserProvider>(context);
     FirebaseDatabase _database = FirebaseDatabase.instance;
     final storage = FirebaseStorage.instance;
-    FirebaseFirestore _fireStore = FirebaseFirestore.instance;
-    String ref = "users";
-    String id = userProvider.user.uid;
     String? imageUrl1;
     String picture1 = "${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
+
+
     storage.ref().child(picture1).putFile(_image!).then((t) {
       t.ref.getDownloadURL().then((value) {
         imageUrl1 = value;
+        _fireStore.collection(ref).doc(id).update({
+          'picture': value,
+        });
       });
     });
-    _database.ref().child("users/$id").update(
-        {"picture": imageUrl1}).catchError((e) => {print(e.toString())});
+    // _database.ref().child("users/$id").update(
+    //     {"picture": imageUrl1}).catchError((e) => {print(e.toString())});
 
+
+  }
+
+  Future<void> _updateUserInfo(
+      BuildContext context, String name, String address) async {
     _fireStore.collection(ref).doc(id).update({
-      'picture': imageUrl1,
-    });
-    setState(() {
-      print("Profile Picture uploaded");
+      'name': _name.text.isNotEmpty ? _name.text : name,
+      'address': _address.text.isNotEmpty ? _address.text : address,
     });
   }
 
@@ -72,25 +99,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _buildProfileImage() {
-    final userProvider = Provider.of<UserProvider>(context);
-    // Object image =
-    // _image!.path.isEmpty  ?
-    // FileImage(_image!)
-    //     :
-    // NetworkImage(userProvider.userFetcher.getPicture,);
-
+    final userProvider = Provider.of<UserProvider>(context, listen: true);
     return Container(
       height: 150,
       width: 155,
       child: Stack(
-        //mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           if (userProvider.userFetcher.getPicture.isNotEmpty)
             CircleAvatar(
                 maxRadius: 150,
                 backgroundColor: Colors.white,
                 backgroundImage: NetworkImage(
-                  userProvider.userFetcher.getPicture,
+                  userProvider.userFetcher.picture! ,
                 )),
           if (_image != null)
             CircleAvatar(
@@ -98,28 +118,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: Colors.white,
               backgroundImage: FileImage(_image!),
             ),
-          // child: _image != null ?
-          //     ClipRect(
-          //       child: Image.file(_image!) ,
-          //     ) :
-          //     ClipRect(
-          //       child:Image.network(userProvider.userFetcher.getPicture,),
-          //     )
-          //
-          //     :
-          //
-          // Image.file(
-          //
-          // )
-          //     :
-          // Image.network(
-          //
-          //   fit: BoxFit.fill,
-          // ),
-          // child: ClipOval(
-          //   child:
-          // ),
-          //),
           Positioned(
             bottom: 4,
             right: 0.1,
@@ -150,29 +148,190 @@ class _ProfileScreenState extends State<ProfileScreen> {
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
-
-    return Text(
-      userProvider.userFetcher.getName,
-      style: _nameTextStyle,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          userProvider.userFetcher.getName,
+          style: _nameTextStyle,
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => AlertDialog(
+                  title: Text('Edit Your Name'),
+                  content: Container(
+                    height: 150,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _name,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "New Name",
+                            icon: Icon(Icons.person_outline),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "The name field cannot be empty";
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                _name.clear();
+                                Navigator.of(context).pop();
+                              },
+                              child: Icon(Icons.close),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                _updateUserInfo(
+                                    context,
+                                    _name.text,
+                                    userProvider.userFetcher.getAddress
+                                ).then((_) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                   userProvider.reloadUserFetcher().then((_) {
+                                     _name.clear();
+                                     Navigator.of(context).pop();
+                                   });
+                                });
+                              },
+                              child: Icon(Icons.check),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+          child: Icon(
+            Icons.edit_outlined,
+            size: 22,
+          ),
+        )
+      ],
     );
   }
 
   _buildStatus() {
     final userProvider = Provider.of<UserProvider>(context);
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
-      decoration: BoxDecoration(
-        //color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Text(
-        userProvider.userFetcher.getEmail,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 14.0,
-          fontWeight: FontWeight.w400,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              userProvider.userFetcher.getAddress,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => AlertDialog(
+                      title: Text('Edit Your Address'),
+                      content: Container(
+                        height: 150,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _address,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "New Address",
+                                icon: Icon(Icons.home_filled),
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "The address field cannot be empty";
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    _address.clear();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Icon(Icons.close),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    _updateUserInfo(
+                                        context,
+                                        userProvider.userFetcher.getName,
+                                        _address.text
+                                    ).then((_) {
+                                      FocusManager.instance.primaryFocus?.unfocus();
+                                      userProvider.reloadUserFetcher().then((_) {
+                                        _address.clear();
+                                        Navigator.of(context).pop();
+                                      });
+                                    });
+                                  },
+                                  child: Icon(Icons.check),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.edit_outlined,
+                size: 22,
+              ),
+            )
+          ],
         ),
-      ),
+      ],
     );
   }
 
@@ -232,10 +391,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       color: Color(0xFF799497),
       fontSize: 16.0,
     );
-
     return Container(
-      //color: Colors.yellowAccent,
-      //Theme.of(context).scaffoldBackgroundColor,
       padding: EdgeInsets.all(8.0),
       child: Text(
         _bio,
@@ -262,9 +418,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: <Widget>[
           Expanded(
             child: InkWell(
-              onTap: () async {
-                uploadPic(context);
-                await userProvider.reloadUserFetcher();
+              onTap: () async{
+                uploadPic(context).then((_){
+                   userProvider.reloadUserFetcher().then((_){
+                    Navigator.pop(context);
+                  });
+                });
               },
               child: Container(
                 height: 40.0,
@@ -315,215 +474,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Size screenSize = MediaQuery.of(context).size;
-    // return SafeArea(
-    //   child: Scaffold(
-    //     body:   Container(
-    //         child: Column(
-    //           children: <Widget>[
-    //             Container(
-    //               height: 240,
-    //               decoration: BoxDecoration(
-    //                   borderRadius: BorderRadius.only(
-    //                     bottomRight: Radius.circular(40.0),
-    //                     bottomLeft: Radius.circular(40.0),
-    //                   ),
-    //                   image: DecorationImage(
-    //                     image:AssetImage('image/farm3.jpg'),
-    //                     fit: BoxFit.fill,
-    //                   )
-    //               ),
-    //               child: Column(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //                 children: <Widget>[
-    //                   Row(
-    //                     children: <Widget>[
-    //                       Padding(
-    //                         padding: EdgeInsets.only(top:0.0),
-    //                         child: IconButton(
-    //                           icon: Icon(
-    //                             Icons.arrow_back,
-    //                             size: 30.0,
-    //                             color: Colors.white,
-    //                           ),
-    //                           onPressed: () {
-    //                             userProvider.reloadUserFetcher();
-    //                             Navigator.pop(context);
-    //                           },
-    //                         ),
-    //                       ),
-    //                     ],
-    //                   ),
-    //                   Row(
-    //                     mainAxisAlignment: MainAxisAlignment.start,
-    //                     children: <Widget>[
-    //                       SizedBox(
-    //                         width: 10.0,
-    //                       ),
-    //                       Align(
-    //     //                         alignment: Alignment.center,
-    //     //                         child: CircleAvatar(
-    //     //                           radius: 80,
-    //     //                           child: ClipOval(
-    //     //                             child: new SizedBox(
-    //     //                               width: 160.0,
-    //     //                               height: 160.0,
-    //     //                               child:
-    //     //                               (_image != null) ? Image.file(
-    //     //                                 _image,
-    //     //                                 fit: BoxFit.fill,
-    //     //                               ):
-    //     //                               Image.network(
-    //     //                                 "${userProvider.userFetcher.picture}",
-    //     //                                 fit: BoxFit.fill,
-    //     //                               ),
-    //     //                             ),
-    //     //                           ),
-    //     //                         ),
-    //     //                       ),
-    //                       Padding(
-    //                         padding: EdgeInsets.only(top: 140.0),
-    //                         child: IconButton(
-    //                           icon: Icon(
-    //                             Icons.camera_alt,
-    //                             size: 30.0,
-    //                             color: Colors.white,
-    //                           ),
-    //                           onPressed: () {
-    //                             getImage();
-    //                           },
-    //                         ),
-    //                       ),
-    //                     ],
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //             SizedBox(
-    //               height: 20.0,
-    //             ),
-    //             Row(
-    //               children: <Widget>[
-    //                 Align(
-    //                   child: Container(
-    //                     child: Row(
-    //                       children: <Widget>[
-    //                         SizedBox(width: 20,),
-    //                         Text('User name',
-    //                               style: TextStyle(
-    //                                   color: Colors.blueGrey, fontSize: 18.0)),
-    //                          SizedBox(width: 10,),
-    //                          Text('${userProvider.userFetcher.name}',
-    //                               style: TextStyle(
-    //                                   color: Colors.black,
-    //                                   fontSize: 20.0,
-    //                                   fontWeight: FontWeight.bold)),
-    //
-    //                       ],
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //             Container(
-    //               margin: EdgeInsets.all(20.0),
-    //               child: Row(
-    //                 mainAxisAlignment: MainAxisAlignment.start,
-    //                 children: <Widget>[
-    //                   Text('Email',
-    //                       style:
-    //                       TextStyle(color: Colors.blueGrey, fontSize: 18.0)),
-    //                   SizedBox(width: 50.0),
-    //                   Text('${userProvider.user.email}',
-    //                       style: TextStyle(
-    //                           color: Colors.black,
-    //                           fontSize: 20.0,
-    //                           fontWeight: FontWeight.bold)),
-    //                 ],
-    //               ),
-    //             ),
-    //             Container(
-    //               child: Row(
-    //                 children: <Widget>[
-    //                   SizedBox(width: 20,),
-    //                   Text('Order',
-    //                       style: TextStyle(
-    //                           color: Colors.blueGrey, fontSize: 18.0)),
-    //                   SizedBox(width: 50,),
-    //                   Text('${userProvider.orders.length}',
-    //                       style: TextStyle(
-    //                           color: Colors.black,
-    //                           fontSize: 20.0,
-    //                           fontWeight: FontWeight.bold)),
-    //
-    //                 ],
-    //               ),
-    //             ),
-    //             SizedBox(
-    //               height: 20.0,
-    //             ),
-    //             Row(
-    //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //               children: <Widget>[
-    //                 RaisedButton(
-    //                   color: Colors.blueGrey,
-    //                   onPressed: () {
-    //                     Navigator.of(context).pop();
-    //                   },
-    //                   elevation: 4.0,
-    //                   splashColor: Colors.blueGrey,
-    //                   child: Text(
-    //                     'Cancel',
-    //                     style: TextStyle(color: Colors.white, fontSize: 16.0),
-    //                   ),
-    //                 ),
-    //                 RaisedButton(
-    //                   color: Colors.blueGrey,
-    //                   onPressed: () async{
-    //                     uploadPic(context);
-    //                     await userProvider.reloadUserFetcher();
-    //                   },
-    //                   elevation: 4.0,
-    //                   splashColor: Colors.blueGrey,
-    //                   child: Text(
-    //                     'Submit',
-    //                     style: TextStyle(color: Colors.white, fontSize: 16.0),
-    //                   ),
-    //                 ),
-    //               ],
-    //             )
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    // );
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      body : SafeArea(
           key: _key,
-          body: Builder(
-            builder: (BuildContext context) {
-              return Stack(
+          child : Stack(
+            children: <Widget>[
+              _buildCoverImage(),
+              Column(
                 children: <Widget>[
-                  _buildCoverImage(),
-                  Column(
-                    children: <Widget>[
-                      SizedBox(height: 120),
-                      _buildProfileImage(),
-                      _buildFullName(),
-                      _buildStatus(),
-                      _buildStatContainer(),
-                      _buildBio(context),
-                      _buildSeparator(),
-                      SizedBox(height: 10.0),
-                      //_buildGetInTouch(context),
-                      SizedBox(height: 8.0),
-                      _buildButtons(),
-                    ],
-                  ),
+                  SizedBox(height: 120),
+                  _buildProfileImage(),
+                  _buildFullName(),
+                  _buildStatus(),
+                  _buildStatContainer(),
+                  _buildBio(context),
+                  _buildSeparator(),
+                  SizedBox(height: 10.0),
+                  SizedBox(height: 8.0),
+                  _buildButtons(),
                 ],
-              );
-            },
-          )),
+              ),
+            ],
+          )
+      ),
     );
   }
 }
