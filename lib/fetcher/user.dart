@@ -11,6 +11,8 @@ class UserFetcher {
   static const String CART = 'cart';
   static const String FAVOURITES = 'favourites';
   static const String PICTURE = 'picture';
+  static const String ADDRESS = 'address';
+
 
   String? name;
   String? id;
@@ -18,6 +20,7 @@ class UserFetcher {
   String? stripeId;
   double priceSum = 0;
   String? picture;
+  String? address;
 
 
   //public varibles
@@ -36,6 +39,7 @@ class UserFetcher {
 
   String get getPicture => picture!;
 
+  String get getAddress => address!;
 
   UserFetcher(
       {
@@ -47,7 +51,9 @@ class UserFetcher {
         required this.priceSum,
         required  this.cart,
         required this.favourites,
-        required this.totalCartPrice});
+        required this.totalCartPrice,
+        required this.address
+      });
 
   UserFetcher.fromSnapshot(Map<String,dynamic> snapshot) {
     name = snapshot[NAME];
@@ -55,6 +61,7 @@ class UserFetcher {
     email = snapshot[EMAIL];
     stripeId = snapshot[STRIPE_ID] ?? "";
     picture = snapshot[PICTURE];
+    address = snapshot[ADDRESS];
     cart = _convertCartItems(snapshot[CART] ?? []);
     favourites = _convertFavItems(snapshot[FAVOURITES] ?? []);
     totalCartPrice = snapshot[CART] == null ? 0 :getTotalPrice(cart: snapshot[CART]);

@@ -20,12 +20,13 @@ class _SignUpState extends State<SignUp> {
   final _Key = GlobalKey<ScaffoldState>();
   final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _passwordTextController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   final TextEditingController _nameTextController = TextEditingController();
   String? gender;
   String groupValue = 'male';
   bool hidePass = true;
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,8 @@ class _SignUpState extends State<SignUp> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16.0),
                           boxShadow: [
-                            BoxShadow(color: Colors.grey[350]!, blurRadius: 20.0)
+                            BoxShadow(
+                                color: Colors.grey[350]!, blurRadius: 20.0)
                           ],
                         ),
                         child: Form(
@@ -106,24 +108,26 @@ class _SignUpState extends State<SignUp> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 16.0),
                                     child: TextFormField(
-                                        controller: _emailTextController,
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: "Email",
-                                          icon: Icon(Icons.alternate_email),
-                                        ),
-                                        validator: (value) {
-                                          if (value!.isEmpty) {
-                                            Pattern pattern =
-                                               // r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                            //r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
-                                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                            RegExp regex =  RegExp(pattern.toString());
-                                            if (!regex.hasMatch(value)) {
-                                              return 'Please make sure your email address is valid';
-                                            }
+                                      controller: _emailTextController,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: "Email",
+                                        icon: Icon(Icons.alternate_email),
+                                      ),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          Pattern pattern =
+                                              // r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                              //r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+                                              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                          RegExp regex =
+                                              RegExp(pattern.toString());
+                                          if (!regex.hasMatch(value)) {
+                                            return 'Please make sure your email address is valid';
                                           }
-                                        }),
+                                        }
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
@@ -211,16 +215,44 @@ class _SignUpState extends State<SignUp> {
                                 ),
                               ),
                               Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      14.0, 8.0, 14.0, 8.0),
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    color: Colors.grey.withOpacity(0.3),
-                                    elevation: 0.0,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                            child: ListTile(
+                                padding: const EdgeInsets.fromLTRB(
+                                    14.0, 8.0, 14.0, 8.0),
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: Colors.grey.withOpacity(0.3),
+                                  elevation: 0.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 0.0),
+                                    child: ListTile(
+                                      title: TextFormField(
+                                        controller: _addressController,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: "address",
+                                          icon: Icon(Icons.home),
+                                        ),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "The address field cannot be empty";
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    14.0, 8.0, 14.0, 8.0),
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: Colors.grey.withOpacity(0.3),
+                                  elevation: 0.0,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: ListTile(
                                           title: Text(
                                             "male",
                                             textAlign: TextAlign.end,
@@ -232,9 +264,10 @@ class _SignUpState extends State<SignUp> {
                                               groupValue: groupValue,
                                               onChanged: (e) =>
                                                   valueChanged(e)),
-                                        )),
-                                        Expanded(
-                                            child: ListTile(
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: ListTile(
                                           title: Text(
                                             "female",
                                             textAlign: TextAlign.end,
@@ -246,10 +279,12 @@ class _SignUpState extends State<SignUp> {
                                               groupValue: groupValue,
                                               onChanged: (e) =>
                                                   valueChanged(e)),
-                                        )),
-                                      ],
-                                    ),
-                                  )),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(
                                     14.0, 8.0, 14.0, 8.0),
@@ -263,30 +298,23 @@ class _SignUpState extends State<SignUp> {
                                         if (await user.signUp(
                                             _nameTextController.text,
                                             _emailTextController.text,
-                                            _passwordTextController.text)){
-                                         setState(() {
-                                           Navigator.pushReplacement(
-                                               context,
-                                               MaterialPageRoute(
-                                                   builder: (context) =>
-                                                       MyHomePage()));
-                                         });
-                                        }else{
+                                            _passwordTextController.text,
+                                            _addressController.text)) {
+                                          setState(() {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MyHomePage()));
+                                          });
+                                        } else {
                                           Future.delayed(Duration(seconds: 2));
                                           print("key $_Key");
-                                          Fluttertoast.showToast(msg:"Sign up failed" );
-                                          //_Key = ["LabeledGlobalKey<ScaffoldState>#793c0"];
-                                           // Scaffold.of(context).showSnackBar(SnackBar(
-                                           //   content: Text("Sign up failed"),));
-                                           //  _Key.currentState.showSnackBar(
-                                           //      SnackBar(
-                                           //          content:
-                                           //              Text("Sign up failed")));
-
-
+                                          Fluttertoast.showToast(
+                                              msg: "Sign up failed");
                                         }
-                                       }
-                                      },
+                                      }
+                                    },
                                     minWidth: MediaQuery.of(context).size.width,
                                     child: Text(
                                       "Sign Up",

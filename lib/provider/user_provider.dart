@@ -46,7 +46,8 @@ class UserProvider with ChangeNotifier {
       picture: '',
       priceSum: 0,
       stripeId: '',
-      totalCartPrice: 0
+      totalCartPrice: 0,
+      address: ''
     );
     _auth.authStateChanges().listen((event) {
       event != null ?
@@ -69,7 +70,7 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> signUp(String name, String email, String password) async {
+  Future<bool> signUp(String name, String email, String password, String address) async {
     try {
       _status = Status.Authenticating;
       notifyListeners();
@@ -83,7 +84,8 @@ class UserProvider with ChangeNotifier {
           "userId": user.user!.uid,
           "picture": "https://firebasestorage.googleapis.com/v0/b/bustank-36ea0.appspot.com/o/1607444060982.jpg?alt=media&token=c035d686-ca3f-43d3-baa3-06afa94f50bf",
           "cart": [],
-          "favourites": []
+          "favourites": [],
+          'address':address
         });
       });
       return true;

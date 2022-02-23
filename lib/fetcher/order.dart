@@ -1,6 +1,8 @@
 
 // ignore_for_file: constant_identifier_names
 
+import 'package:bustank/fetcher/cart_items.dart';
+
 class OrderFetcher {
   static const String ID = "id";
   static const String DESCRIPTION = "description";
@@ -40,7 +42,7 @@ class OrderFetcher {
   int get createdAt => _createdAt!;
 
   // public variable
-  List? cart;
+  List<dynamic> cart = [];
 
   OrderFetcher.fromSnapshot(Map<String,dynamic> snapshot) {
     _id = snapshot[ID];
@@ -52,6 +54,16 @@ class OrderFetcher {
     _createdAt = snapshot[CREATED_AT];
     _phoneNumber = snapshot[PHONENUMBER];
     cart = snapshot[CART];
+    convertCart();
+  }
 
+  void convertCart (){
+    List<CartItemFetcher> items = [];
+    for (var element in cart) {
+      items.add(
+          CartItemFetcher.fromMap(element)
+      );
+    }
+    cart = items ;
   }
 }

@@ -52,6 +52,9 @@ dependencies:
   flutter_typeahead:
   firebase_storage:
   font_awesome_flutter:
+  pdf: ^3.7.1
+  open_file: ^3.2.1
+  path_provider: ^2.0.9
 
 dev_dependencies:
   flutter_test:

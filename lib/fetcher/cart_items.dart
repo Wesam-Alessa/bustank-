@@ -41,6 +41,11 @@ class CartItemFetcher{
   bool get featured => _featured!;
   String get description => _description!;
 
+//   CartItemFetcher({
+//     required this.name,
+//
+// });
+
   CartItemFetcher.fromMap(Map<String,dynamic> data){
     _name = data[NAME];
     _id = data[ID];
