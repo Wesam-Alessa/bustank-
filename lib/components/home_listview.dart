@@ -10,8 +10,8 @@ import 'package:bustank/categories_screens/trees_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class HorizontalList extends StatelessWidget {
-  const HorizontalList({Key? key}) : super(key: key);
+class HomeList extends StatelessWidget {
+  const HomeList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

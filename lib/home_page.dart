@@ -14,7 +14,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 //my own imports
-import 'package:bustank/components/horizontal_listview.dart';
+import 'package:bustank/components/home_listview.dart';
 import 'package:bustank/components/product_card.dart';
 import 'package:bustank/screens/cart.dart';
 import 'package:bustank/screens/login.dart';
@@ -192,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         body: SafeArea(
-          child: HorizontalList(),
+          child: HomeList(),
           // ListView(
           //   children: <Widget>[
           //     //images carousel begins here
