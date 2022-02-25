@@ -97,7 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         Icons.home,
                         color: Colors.indigo,
                       ),
-
                     ),
                   ),
                   InkWell(

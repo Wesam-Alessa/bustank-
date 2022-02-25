@@ -1,5 +1,5 @@
 
-import 'package:bustank/components/product_card.dart';
+ import 'package:bustank/components/product_gridView.dart';
 import 'package:bustank/provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,14 +24,20 @@ class InsecticideScreen extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: productProvider.insecticide
-              .map((item) => GestureDetector(
-            child: ProductCard(
-              product: item,
-            ),
-          )).toList(),
-        ),
+        child:ProductsGridView(
+          products: productProvider.insecticide,
+        )
+        // SingleChildScrollView(
+        //   physics: const BouncingScrollPhysics(),
+        //   child: Column(
+        //     children: productProvider.insecticide
+        //         .map((item) => GestureDetector(
+        //       child: ProductCard(
+        //         product: item,
+        //       ),
+        //     )).toList(),
+        //   ),
+        // ),
       ),
     );
   }

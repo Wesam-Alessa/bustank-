@@ -1,7 +1,7 @@
 
 // ignore_for_file: prefer_const_constructors
 
-import 'package:bustank/components/product_card.dart';
+ import 'package:bustank/components/product_gridView.dart';
 import 'package:bustank/provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,14 +26,20 @@ class AgricultureWorkersScreen extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: productProvider.agricultureWorkers
-              .map((item) => GestureDetector(
-            child: ProductCard(
-              product: item,
-            ),
-          )).toList(),
-        ),
+        child: ProductsGridView(
+          products: productProvider.agricultureWorkers,
+        )
+        // SingleChildScrollView(
+        //   physics: const BouncingScrollPhysics(),
+        //   child: Column(
+        //     children: productProvider.agricultureWorkers
+        //         .map((item) => GestureDetector(
+        //       child: ProductCard(
+        //         product: item,
+        //       ),
+        //     )).toList(),
+        //   ),
+        // ),
       ),
     );
   }
