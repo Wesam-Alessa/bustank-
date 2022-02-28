@@ -50,106 +50,97 @@ class _CartScreenState extends State<CartScreen> {
                     child: Container(
                       height: 120,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Colors.blueGrey,
-                                offset: Offset(3, 2),
-                                blurRadius: 30)
-                          ]),
-                      child: Row(
-                        children: <Widget>[
-                          ClipRRect(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              topLeft: Radius.circular(10),
-                            ),
-                            child: imageCarousel(
-                                userProvider.userFetcher.cart![index].pictures),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Colors.blueGrey,
+                              offset: Offset(3, 2),
+                              blurRadius: 30)
+                        ],
+                      ),
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: userProvider
-                                                .userFetcher.cart![index].name +
-                                            "\n",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      TextSpan(
-                                        text:
-                                            "qnt ${userProvider.userFetcher.cart![index].quantity} \n",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                      TextSpan(
-                                        text:
-                                            "size ${userProvider.userFetcher.cart![index].size} \n",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                      TextSpan(
-                                        text:
-                                            "${userProvider.userFetcher.cart![index].price} JD\n",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                      TextSpan(
-                                        text:
-                                            "total ${userProvider.userFetcher.cart![index].price * double.parse(userProvider.userFetcher.cart![index].quantity) * totalPrice(userProvider.userFetcher.cart![index])} JD\n",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ],
-                                  ),
+                                ClipRRect(
+                                  borderRadius:BorderRadius.all(Radius.circular(10)) ,
+                                  child: buildImage(userProvider
+                                      .userFetcher.cart![index].pictures[0]),
+                                ),
+                                SizedBox(
+                                  width: 10,
                                 ),
                                 Column(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.close,
-                                        color: Colors.grey,
-                                      ),
-                                      onPressed: () async {
-                                        appProvider.changeIsLoading();
-                                        bool success =
-                                            await userProvider.removeFromCart(
-                                                cartItem: userProvider
-                                                    .userFetcher.cart![index]);
-                                        if (success) {
-                                          print("Item Removed from Cart");
-                                          userProvider.reloadUserFetcher();
-                                          appProvider.changeIsLoading();
-                                          return;
-                                        } else {
-                                          appProvider.changeIsLoading();
-                                        }
-                                      },
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      userProvider.userFetcher.cart![index].name,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "qnt ${userProvider.userFetcher.cart![index].quantity}",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    Text(
+                                      "size ${userProvider.userFetcher.cart![index].size}",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    Text(
+                                      "${userProvider.userFetcher.cart![index].price} JD",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    Text(
+                                      "total ${(userProvider.userFetcher.cart![index].price * double.parse(userProvider.userFetcher.cart![index].quantity) * totalPrice(userProvider.userFetcher.cart![index])).truncate()} JD",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w300),
                                     ),
                                   ],
                                 ),
                               ],
                             ),
                           ),
+                          Positioned(
+                            right: 1,
+                            top: 1,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () async {
+                                appProvider.changeIsLoading();
+                                bool success =
+                                    await userProvider.removeFromCart(
+                                        cartItem: userProvider
+                                            .userFetcher.cart![index]);
+                                if (success) {
+                                  print("Item Removed from Cart");
+                                  userProvider.reloadUserFetcher();
+                                  appProvider.changeIsLoading();
+                                  return;
+                                } else {
+                                  appProvider.changeIsLoading();
+                                }
+                              },
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -175,7 +166,7 @@ class _CartScreenState extends State<CartScreen> {
                           fontWeight: FontWeight.w400),
                     ),
                     TextSpan(
-                      text: " \$${userProvider.userFetcher.totalCartPrice}",
+                      text: " \$${userProvider.userFetcher.totalCartPrice!.truncate()}",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 22,
@@ -358,12 +349,12 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  imageCarousel(List pictures) {
+  buildImage(String pictures) {
     return SizedBox(
       height: 120,
       width: 140,
       child: Image.network(
-        "${pictures[0]}",
+        pictures,
         fit: BoxFit.fill,
       ),
     );

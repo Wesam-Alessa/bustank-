@@ -1,6 +1,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe, prefer_const_constructors, unnecessary_string_interpolations, prefer_const_literals_to_create_immutables
 
 import 'package:bustank/provider/user_provider.dart';
+import 'package:bustank/screens/add_product_screen.dart';
 import 'package:bustank/screens/favourites.dart';
 import 'package:bustank/screens/orders.dart';
 import 'package:bustank/screens/product_search.dart';
@@ -202,28 +203,15 @@ class _MyHomePageState extends State<MyHomePage> {
             body: SafeArea(
               child: HomeList(),
             ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (_)=> AddProductScreen())),
+              child: Icon(Icons.add),
+              backgroundColor: Colors.blueGrey,
+            ),
           )
         : Center(
             child: CircularProgressIndicator(),
           );
   }
-// Widget imageCarousel() {
-//   return SizedBox(
-//     height: 200,
-//     child: CarouselSlider(
-//       items: [
-//         Image(image:AssetImage('image/farm1.png'),fit: BoxFit.cover,),
-//         Image(image:AssetImage('image/farm2.jpg'),fit: BoxFit.cover,),
-//         Image(image:AssetImage('image/farm3.jpg'),fit: BoxFit.cover,),
-//         Image(image:AssetImage('image/farm4.jpg'),fit: BoxFit.cover,),
-//         Image(image:AssetImage('image/farm5.jpg'),fit: BoxFit.cover,),
-//       ],
-//       options: CarouselOptions(
-//         autoPlay: true,
-//         autoPlayCurve: Curves.fastOutSlowIn,
-//         autoPlayAnimationDuration: Duration(microseconds: 2000),
-//       ),
-//     )
-//   );
-// }
+
 }

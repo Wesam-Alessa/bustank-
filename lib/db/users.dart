@@ -27,7 +27,8 @@ class UserServices {
       'email': value['email'],
       "cart" : value['cart'],
       "picture" : value['picture'],
-      "favourites" : value['favourites']
+      "favourites" : value['favourites'],
+      'address':value['address'],
     });
   }
 

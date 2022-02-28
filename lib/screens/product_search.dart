@@ -1,72 +1,72 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:bustank/components/product_card.dart';
+import 'package:bustank/components/product_gridView.dart';
 import 'package:bustank/provider/product_provider.dart';
-import 'package:bustank/screens/products_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ProductSearchScreen extends StatelessWidget {
+class ProductSearchScreen extends StatefulWidget {
   const ProductSearchScreen({Key? key}) : super(key: key);
 
   @override
+  State<ProductSearchScreen> createState() => _ProductSearchScreenState();
+}
+
+class _ProductSearchScreenState extends State<ProductSearchScreen> {
+  @override
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueGrey,
         leading: IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context);
-              productProvider.productsSearched.clear();
-            }),
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            productProvider.productsSearched.clear();
+            Navigator.pop(context);
+          },
+        ),
         title: Container(
           decoration: BoxDecoration(
-              color: Colors.blueGrey,
-              borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(20),
-                  bottomLeft: Radius.circular(20))),
-          child: Padding(
-            padding: const EdgeInsets.only(
-                top: 5, left: 8, right: 8, bottom: 5),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[300]!.withOpacity(1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: ListTile(
-                leading: Icon(
+            color: Colors.grey[300]!.withOpacity(1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child:TextField(
+            textInputAction: TextInputAction.search,
+            onChanged: (value) {
+              value.isEmpty ? setState(() {
+                productProvider.productsSearched.clear();
+              }):
+               productProvider.search(productName: value);
+            },
+            // onSubmitted: (pattern) async {
+            //
+            //   // Navigator.pushReplacement(
+            //   //   context,
+            //   //   MaterialPageRoute(
+            //   //     builder: (context) => ProductSearchScreen(),
+            //   //   ),
+            //   // );
+            // },
+            decoration: InputDecoration(
+                hintText: "search...",
+                border: InputBorder.none,
+                icon: Icon(
                   Icons.search,
                   color: Colors.black,
-                ),
-                title: TextField(
-                  textInputAction: TextInputAction.search,
-                  onSubmitted: (pattern)async{
-                    await productProvider.search(productName: pattern);
-                    Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => ProductSearchScreen()));
-                    //pattern = null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "search...",
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
+                )
             ),
           ),
         ),
         elevation: 0.0,
         centerTitle: true,
-        actions: const <Widget>[
-          Icon(Icons.category),
-          SizedBox(
-            width: 15,
-          )
-        ],
+        // actions: const <Widget>[
+        //   Icon(Icons.category),
+        //   SizedBox(
+        //     width: 15,
+        //   )
+        // ],
       ),
       body: productProvider.productsSearched.isEmpty
           ? Column(
@@ -88,31 +88,39 @@ class ProductSearchScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const <Widget>[
-                    Text("No products Found",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.grey,
-                        )),
+                    Text(
+                      "No products Found",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.grey,
+                      ),
+                    ),
                   ],
                 )
               ],
             )
-          : ListView.builder(
-              itemCount: productProvider.productsSearched.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                    onTap: () async {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProductDetails(
-                                  product: productProvider
-                                      .productsSearched[index])));
-                    },
-                    child: ProductCard(
-                        product: productProvider.productsSearched[index]));
-              }),
+          :
+          ProductsGridView(products: productProvider.productsSearched),
+
+          // : ListView.builder(
+          //     itemCount: productProvider.productsSearched.length,
+          //     itemBuilder: (context, index) {
+          //       return GestureDetector(
+          //         onTap: () async {
+          //           Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //               builder: (context) => ProductDetails(
+          //                   product: productProvider.productsSearched[index]),
+          //             ),
+          //           );
+          //         },
+          //         child: ProductCard(
+          //             product: productProvider.productsSearched[index]),
+          //       );
+          //     },
+          //   ),
     );
   }
 }

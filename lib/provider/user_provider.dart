@@ -21,7 +21,7 @@ class UserProvider with ChangeNotifier {
   late User _user;
   Status _status = Status.Uninitialized;
   final UserServices _userServices = UserServices();
-   late UserFetcher _userFetcher;
+  late UserFetcher _userFetcher;
   final OrderServices _orderServices = OrderServices();
   final FavouritesServices _favouritesServices = FavouritesServices();
 

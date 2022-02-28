@@ -1,12 +1,15 @@
 // ignore_for_file: non_constant_identifier_names, avoid_print
 
+import 'dart:io';
+
 import 'package:bustank/db/products.dart';
 import 'package:bustank/fetcher/product.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProductProvider with ChangeNotifier {
-
   final ProductsService _productServices = ProductsService();
   List<ProductFetcher> products = [];
   List<ProductFetcher> productsFeatured = [];
@@ -21,22 +24,20 @@ class ProductProvider with ChangeNotifier {
   List<ProductFetcher> productsSearched = [];
 
   ProductProvider.initialize() {
-    FirebaseAuth.instance.currentUser != null?
-    loadProducts()
-    :null;
+    FirebaseAuth.instance.currentUser != null ? loadProducts() : null;
   }
 
- Future<void> loadProducts() async {
+  Future<void> loadProducts() async {
     products = await _productServices.getProducts();
     print(products.length);
     for (int i = 0; i < products.length; i++) {
       if (products[i].featured == true) {
         productsFeatured.add(products[i]);
       }
-      switch(products[i].category){
+      switch (products[i].category) {
         case 'Seeds':
           seeds.add(products[i]);
-              break;
+          break;
         case 'Trees':
           trees.add(products[i]);
           break;
@@ -63,32 +64,95 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<ProductFetcher> getSimilarProducts(String ProductCategory){
+
+  List<ProductFetcher> getSimilarProducts(String ProductCategory) {
     List<ProductFetcher> p = [];
-    switch(ProductCategory){
+    switch (ProductCategory) {
       case 'Seeds':
-       return p = seeds;
+        return p = seeds;
       case 'Trees':
         return p = trees;
       case 'Farm Tools':
-        return p =farmTools;
+        return p = farmTools;
       case 'Garden Tools':
-        return p =gardenTools;
+        return p = gardenTools;
       case 'Land For Rent':
-        return p =landForRent;
+        return p = landForRent;
       case 'insecticide':
-        return p =insecticide;
+        return p = insecticide;
       case 'Agriculture Design':
-        return p =agricultureDesigns;
+        return p = agricultureDesigns;
       case 'Agriculture Workers':
-        return p =agricultureWorkers;
+        return p = agricultureWorkers;
     }
     return p;
   }
 
-  Future search({required String productName}) async {
+  Future<void> search({required String productName}) async {
     productsSearched =
-        await _productServices.searchProducts(productName: productName);
+        _productServices.searchProducts(productName: productName);
+    notifyListeners();
+  }
+
+  Future<void> uploadProducts({required ProductFetcher product}) async {
+    await uploadProduct(product: product);
+    notifyListeners();
+  }
+
+  List<String> urls = [];
+
+  Future<void> uploadImage(File image, String userId) async {
+    await FirebaseStorage.instance
+        .ref('images')
+        .child(userId)
+        .putFile(image)
+        .then((p) {
+      p.ref.getDownloadURL().then((value) {
+        urls.add(value);
+        notifyListeners();
+      });
+    });
+
+  }
+
+  Future<void> uploadProductPictures(
+      List pictures, String userId) async {
+    for (var element in pictures) {
+      await uploadImage(element, userId);
+    }
+    notifyListeners();
+  }
+
+  Future<void> uploadProduct({required ProductFetcher product}) async {
+    List<String> imagesUrl = [];
+    if (product.pictures != []) {
+      await uploadProductPictures(product.pictures, product.userId)
+          .then((value) {
+        imagesUrl = urls;
+        product.setPictures(imagesUrl);
+        FirebaseFirestore.instance
+            .collection('products')
+            .add(product.toMap())
+            .then((value) {
+         // allProducts.add(product);
+        }).catchError((onError) {
+         // allProducts.remove(product);
+          throw onError;
+        });
+      });
+    }
+    // else {
+    //   product.setPictures(imagesUrl);
+    //   await FirebaseFirestore.instance
+    //       .collection('products')
+    //       .add(product.toMap())
+    //       .then((value) {
+    //     allProducts.add(product);
+    //   }).catchError((onError) {
+    //     allProducts.remove(product);
+    //     throw onError;
+    //   });
+    // }
     notifyListeners();
   }
 }
