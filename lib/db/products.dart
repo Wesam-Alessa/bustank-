@@ -1,10 +1,9 @@
-import 'dart:io';
 
 import 'package:bustank/fetcher/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 
-import 'package:firebase_storage/firebase_storage.dart';
+
 
 class ProductsService {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
@@ -20,7 +19,6 @@ class ProductsService {
         allProducts = products;
         return products;
       });
-
 
   Future<List<ProductFetcher>> getProductsFav({required String pId}) async =>
       _fireStore

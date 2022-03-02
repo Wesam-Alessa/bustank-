@@ -17,6 +17,7 @@ import 'package:bustank/components/home_listview.dart';
 import 'package:bustank/screens/cart.dart';
 import 'package:bustank/screens/login.dart';
 import 'provider/product_provider.dart';
+import 'screens/my_products_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -32,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     final productProvider = Provider.of<ProductProvider>(context, listen: true);
+    var userService = Provider.of<UserProvider>(context, listen: true);
     return userProvider.user.uid.isNotEmpty
         ? Scaffold(
             key: _key,
@@ -104,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: () async {
                       await userProvider.reloadUserFetcher();
                       await userProvider.getOrders();
+                      await productProvider.getMyProducts(userService.user.uid);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -119,9 +122,25 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   InkWell(
                     onTap: () async {
-                      await userProvider.getOrders();
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => OrdersScreen()));
+                     await productProvider.getMyProducts(userService.user.uid)
+                     .whenComplete(() => Navigator.push(
+                         context,
+                         MaterialPageRoute(
+                             builder: (context) => MyProductsScreen()))
+                      );
+                    },
+                    child: ListTile(
+                      title: Text('My Products'),
+                      leading: Icon(
+                        Icons.category,
+                        color: Colors.brown,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      await userProvider.getOrders().whenComplete(() => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => OrdersScreen())));
                     },
                     child: ListTile(
                       title: Text('My Order'),
@@ -184,10 +203,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       setState(() {
                         userProvider.signOut();
                       });
-                      //FirebaseAuth.instance.signOut().then((value) {
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => Login()));
-                      // });
                     },
                     child: ListTile(
                       title: Text('logout'),

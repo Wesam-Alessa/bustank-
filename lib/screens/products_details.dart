@@ -218,11 +218,8 @@ class _ProductDetailsState extends State<ProductDetails> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               child: Text(
-                "W/example.bustan( 3045): Accessing hidden method Lsun/misc/Unsafe;->putLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)W/example.bustan( 3045): Accessing hidden method Lsun/misc/Unsafe;->putLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)Reloaded 1 of 1334 libraries in 3,083ms.I/flutter ( 3045): 13W/example.bustan( 3045): Accessing hidden method Lsun/misc/Unsafe;->putLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)W/example.bustan( 3045): Accessing hidden method Lsun/misc/Unsafe;->putLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)",
-                //widget.product.description,
-                //style: TextStyle(color: Colors.grey),
-                // maxLines: 10,
-                //overflow: TextOverflow.ellipsis,
+                //"W/example.bustan( 3045): Accessing hidden method Lsun/misc/Unsafe;->putLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)W/example.bustan( 3045): Accessing hidden method Lsun/misc/Unsafe;->putLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)Reloaded 1 of 1334 libraries in 3,083ms.I/flutter ( 3045): 13W/example.bustan( 3045): Accessing hidden method Lsun/misc/Unsafe;->putLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)W/example.bustan( 3045): Accessing hidden method Lsun/misc/Unsafe;->putLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)",
+                widget.product.description,
               ),
             ),
             Divider(),
@@ -275,7 +272,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                               style: TextStyle(
                                 color: Colors.white,
                               ),
-                            )),
+                            ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(

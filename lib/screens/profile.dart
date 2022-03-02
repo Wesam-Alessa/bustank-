@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, prefer_const_constructors, sized_box_for_whitespace, invalid_use_of_visible_for_testing_member, prefer_typing_uninitialized_variables
 
- import 'package:bustank/provider/user_provider.dart';
+ import 'package:bustank/provider/product_provider.dart';
+import 'package:bustank/provider/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -151,116 +152,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          userProvider.userFetcher.getName,
-          style: _nameTextStyle,
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => AlertDialog(
-                  title: Text('Edit Your Name'),
-                  content: Container(
-                    height: 150,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _name,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "New Name",
-                            icon: Icon(Icons.person_outline),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "The name field cannot be empty";
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                _name.clear();
-                                Navigator.of(context).pop();
-                              },
-                              child: Icon(Icons.close),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                _updateUserInfo(
-                                    context,
-                                    _name.text,
-                                    userProvider.userFetcher.getAddress
-                                ).then((_) {
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                   userProvider.reloadUserFetcher().then((_) {
-                                     _name.clear();
-                                     Navigator.of(context).pop();
-                                   });
-                                });
-                              },
-                              child: Icon(Icons.check),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-          child: Icon(
-            Icons.edit_outlined,
-            size: 22,
-          ),
-        )
-      ],
-    );
-  }
-
-  _buildStatus() {
-    final userProvider = Provider.of<UserProvider>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Column(
           children: [
             Text(
-              userProvider.userFetcher.getAddress,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-              ),
+              userProvider.userFetcher.getName,
+              style: _nameTextStyle,
             ),
-            SizedBox(
-              width: 20,
-            ),
+          ],
+        ),
+        SizedBox(
+          width: 5,
+        ),
+        Column(
+          children: [
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => AlertDialog(
-                      title: Text('Edit Your Address'),
+                      title: Text('Edit Your Name'),
                       content: Container(
                         height: 150,
                         width: 80,
@@ -270,15 +180,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           children: [
                             TextFormField(
-                              controller: _address,
+                              controller: _name,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: "New Address",
-                                icon: Icon(Icons.home_filled),
+                                hintText: "New Name",
+                                icon: Icon(Icons.person_outline),
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return "The address field cannot be empty";
+                                  return "The name field cannot be empty";
                                 }
                                 return null;
                               },
@@ -291,7 +201,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    _address.clear();
+                                    _name.clear();
                                     Navigator.of(context).pop();
                                   },
                                   child: Icon(Icons.close),
@@ -303,14 +213,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   onTap: () {
                                     _updateUserInfo(
                                         context,
-                                        userProvider.userFetcher.getName,
-                                        _address.text
+                                        _name.text,
+                                        userProvider.userFetcher.getAddress
                                     ).then((_) {
                                       FocusManager.instance.primaryFocus?.unfocus();
-                                      userProvider.reloadUserFetcher().then((_) {
-                                        _address.clear();
-                                        Navigator.of(context).pop();
-                                      });
+                                       userProvider.reloadUserFetcher().then((_) {
+                                         _name.clear();
+                                         Navigator.of(context).pop();
+                                       });
                                     });
                                   },
                                   child: Icon(Icons.check),
@@ -328,6 +238,113 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Icons.edit_outlined,
                 size: 22,
               ),
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+  _buildStatus() {
+    final userProvider = Provider.of<UserProvider>(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text(
+                  userProvider.userFetcher.getAddress,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => AlertDialog(
+                          title: Text('Edit Your Address'),
+                          content: Container(
+                            height: 150,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: _address,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "New Address",
+                                    icon: Icon(Icons.home_filled),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "The address field cannot be empty";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        _address.clear();
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Icon(Icons.close),
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _updateUserInfo(
+                                            context,
+                                            userProvider.userFetcher.getName,
+                                            _address.text
+                                        ).then((_) {
+                                          FocusManager.instance.primaryFocus?.unfocus();
+                                          userProvider.reloadUserFetcher().then((_) {
+                                            _address.clear();
+                                            Navigator.of(context).pop();
+                                          });
+                                        });
+                                      },
+                                      child: Icon(Icons.check),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Icon(
+                    Icons.edit_outlined,
+                    size: 22,
+                  ),
+                ),
+              ],
             )
           ],
         ),
@@ -365,6 +382,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   _buildStatContainer() {
     final userProvider = Provider.of<UserProvider>(context);
+    final productsProvider = Provider.of<ProductProvider>(context);
+
     return Container(
       height: 60.0,
       margin: EdgeInsets.only(top: 8.0),
@@ -374,6 +393,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
+          _buildStatItem("My Products", productsProvider.myProducts.length.toString()),
           _buildStatItem("Favourites",
               userProvider.userFetcher.favourites!.length.toString()),
           _buildStatItem("Orders", userProvider.orders.length.toString()),

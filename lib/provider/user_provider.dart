@@ -2,6 +2,7 @@
 
 import 'package:bustank/db/favourites.dart';
 import 'package:bustank/db/order.dart';
+import 'package:bustank/db/products.dart';
 import 'package:bustank/db/users.dart';
 import 'package:bustank/fetcher/cart_items.dart';
 import 'package:bustank/fetcher/fav_items.dart';
@@ -28,6 +29,7 @@ class UserProvider with ChangeNotifier {
   //public variables
   List<OrderFetcher> orders = [];
   List<FavItemFetcher> favourites = [];
+  List<ProductFetcher> myProducts = [];
 
 //    getter
   Status get status => _status;
@@ -213,4 +215,5 @@ class UserProvider with ChangeNotifier {
     favourites = await _favouritesServices.getUserFavourites(userId: _user.uid);
     notifyListeners();
   }
+
 }

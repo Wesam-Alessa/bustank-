@@ -22,6 +22,7 @@ class ProductProvider with ChangeNotifier {
   List<ProductFetcher> agricultureDesigns = [];
   List<ProductFetcher> agricultureWorkers = [];
   List<ProductFetcher> productsSearched = [];
+  List<ProductFetcher> myProducts = [];
 
   ProductProvider.initialize() {
     FirebaseAuth.instance.currentUser != null ? loadProducts() : null;
@@ -62,6 +63,18 @@ class ProductProvider with ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+
+
+  Future<List<ProductFetcher>> getMyProducts(String id) async {
+    myProducts.clear();
+    for (var element in products) {
+      if(element.userId == id){
+        myProducts.add(element);
+      }
+    }
+     return myProducts;
   }
 
 

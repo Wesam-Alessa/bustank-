@@ -14,12 +14,7 @@ class SeedsScreen extends StatelessWidget {
     final productProvider = Provider.of<ProductProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MyHomePage()));
-            },
-            child: const Text("Seeds")),
+        title:  const Text("Seeds"),
         centerTitle: true,
         backgroundColor: Colors.blueGrey,
       ),
@@ -28,20 +23,6 @@ class SeedsScreen extends StatelessWidget {
         child: ProductsGridView(
           products: productProvider.seeds,
         )
-        // SingleChildScrollView(
-        //   physics: const BouncingScrollPhysics(),
-        //   child: Column(
-        //     children:
-        //         .map(
-        //           (item) => GestureDetector(
-        //             child: ProductCard(
-        //               product: item,
-        //             ),
-        //           ),
-        //         )
-        //         .toList(),
-        //   ),
-        // ),
       ),
     );
   }
